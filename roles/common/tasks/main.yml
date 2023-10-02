@@ -1,0 +1,21 @@
+- name: Set Hostname
+  ansible.builtin.shell: set-hostname {{COMPONENT}}
+
+- name: Install Prometheus Node Exporter
+  ansible.builtin.shell: labauto prometheus-node-exporter
+  when: PROMETHEUS_MONITOR | bool
+
+- name: Setup Rsyslog Config
+  when: RSYSLOG_CONFIG | bool
+  ansible.builtin.import_role:
+    name: elk
+    tasks_from: rsyslog
+
+- name: Install Botocore and boto3
+  ansible.builtin.pip:
+    name:
+      - botocore
+      - boto3
+    executable: pip3
+
+
